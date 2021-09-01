@@ -19,6 +19,8 @@ bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    global lst_wrong
+    lst_wrong = []
     bot.send_message(message.chat.id, 'Введи номер строки от 1 до 490')
     bot.register_next_step_handler(message, reg_num)
 
@@ -26,25 +28,34 @@ def start(message):
 def reg_num(message):
     global begin
     global cnt
-    begin = (int(message.text) - 1)
-    cnt = begin
-    bot.send_message(message.chat.id, f'{list_words()[begin]["name"]}')
-    bot.register_next_step_handler(message, verify_translate)
+    try:
+        if not (1 <= int(message.text) <= 490):
+            start(message)
+        else:
+            begin = (int(message.text) - 1)
+            cnt = begin
+            bot.send_message(message.chat.id, f'{list_words()[begin]["name"]}')
+            bot.register_next_step_handler(message, verify_translate)
+    except ValueError:
+        start(message)
 
 
 def verify_translate(message):
 
     global begin
     global lst_wrong
-    global cnt
+    global cnt  
 
     if message.text.lower() != list_words()[begin]["translate"].lower():
             lst_wrong.append(list_words()[begin]["name"])
 
     if begin < (cnt + 9):
-        begin += 1
-        bot.send_message(message.chat.id, f'{list_words()[begin]["name"]}')
-        bot.register_next_step_handler(message, verify_translate) 
+        if message.text.lower() == '/start':
+            start(message)
+        else:
+            begin += 1
+            bot.send_message(message.chat.id, f'{list_words()[begin]["name"]}')
+            bot.register_next_step_handler(message, verify_translate) 
 
     else:
         if lst_wrong:
@@ -52,7 +63,6 @@ def verify_translate(message):
         else:
             bot.send_message(message.chat.id, '👍Красавчик!👍'.upper())
         lst_wrong = []
-        bot.send_message(message.chat.id, 'Введи номер строки от 1 до 490')
-        bot.register_next_step_handler(message, reg_num)
+        start(message)
 
 bot.polling()

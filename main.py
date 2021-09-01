@@ -59,7 +59,7 @@ def verify_translate(message):
 
     else:
         if lst_wrong:
-            bot.send_message(message.chat.id, 'wrong_answers:\n------------------------\n     {}\n------------------------'.format("\n     ".join(str(x) for x in lst_wrong)))
+            bot.send_message(message.chat.id, 'W R O N G _ A N S W E R S :' + '\n' + '_' * 27 + '\n'+ "\n".join(str(x) for x in lst_wrong) +'\n' + '_' * 27 )
         else:
             bot.send_message(message.chat.id, '👍Красавчик!👍'.upper())
         lst_wrong = []

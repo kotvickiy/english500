@@ -1,5 +1,4 @@
 #!/usr/bin/env python3.9
-from os import cpu_count
 import telebot
 from config import TOKEN
 import csv

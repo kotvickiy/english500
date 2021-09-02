@@ -45,7 +45,8 @@ def verify_translate(message):
     global lst_wrong
     global cnt  
 
-    if message.text.lower() != list_words()[begin]["translate"].lower():
+    if message.text.lower() != list_words()[begin]["translate"].lower().split(';')[0] and\
+       message.text.lower() != list_words()[begin]["translate"].lower().split(';')[1]:
             lst_wrong.append(list_words()[begin]["name"])
 
     if begin < (cnt + 9):

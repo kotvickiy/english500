@@ -14,7 +14,7 @@ begin = 0
 lst_wrong = []
 cropped_shuffled_list =[]
 tmp = []
-x = 0
+random_word = 0
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -30,7 +30,7 @@ def start(message):
 def reg_num(message):
     global begin
     global cropped_shuffled_list
-    global x
+    global random_word
     global tmp
     try:
         if not (1 <= int(message.text) <= 490):
@@ -38,12 +38,12 @@ def reg_num(message):
         else:
             begin = (int(message.text) - 1)
             
-            x = randint(0, 9)
-            tmp.append(x)
+            random_word = randint(0, 9)
+            tmp.append(random_word)
             
             cropped_shuffled_list = list_words()[begin:begin+10]
 
-            bot.send_message(message.chat.id, f'{cropped_shuffled_list[x]["name"].upper()}{cropped_shuffled_list[x]["transcription"]}')
+            bot.send_message(message.chat.id, f'{cropped_shuffled_list[random_word]["name"].upper()}{cropped_shuffled_list[random_word]["transcription"]}')
             bot.register_next_step_handler(message, verify_translate)
     except ValueError:
         start(message)
@@ -54,14 +54,14 @@ def verify_translate(message):
     global lst_wrong
     global cropped_shuffled_list
     global tmp
-    global x
+    global random_word
 
-    if ';' in cropped_shuffled_list[x]["translate"].lower():
-        if message.text.lower() != cropped_shuffled_list[x]["translate"].lower().split(';')[0] and message.text.lower() != cropped_shuffled_list[x]["translate"].lower().split(';')[1]:
-            lst_wrong.append(cropped_shuffled_list[x]["name"])
+    if ';' in cropped_shuffled_list[random_word]["translate"].lower():
+        if message.text.replace('ё', 'е').lower() != cropped_shuffled_list[random_word]["translate"].replace('ё', 'е').lower().split(';')[0] and message.text.replace('ё', 'е').lower() != cropped_shuffled_list[random_word]["translate"].replace('ё', 'е').lower().split(';')[1]:
+            lst_wrong.append(cropped_shuffled_list[random_word]["name"])
     
-    elif message.text.lower() != cropped_shuffled_list[x]["translate"].lower():
-        lst_wrong.append(cropped_shuffled_list[x]["name"])
+    elif message.text.replace('ё', 'е').lower() != cropped_shuffled_list[random_word]["translate"].replace('ё', 'е').lower():
+        lst_wrong.append(cropped_shuffled_list[random_word]["name"])
 
     if len(tmp) < 10:
         if message.text.lower() == '/start':
@@ -69,11 +69,11 @@ def verify_translate(message):
         else:
             begin += 1
             while True:
-                x = randint(0, 9)
-                if x not in tmp:
-                    tmp.append(x)
+                random_word = randint(0, 9)
+                if random_word not in tmp:
+                    tmp.append(random_word)
                     break
-            bot.send_message(message.chat.id, f'{cropped_shuffled_list[x]["name"].upper()}{cropped_shuffled_list[x]["transcription"]}')
+            bot.send_message(message.chat.id, f'{cropped_shuffled_list[random_word]["name"].upper()}{cropped_shuffled_list[random_word]["transcription"]}')
             bot.register_next_step_handler(message, verify_translate) 
 
     else:
@@ -85,6 +85,6 @@ def verify_translate(message):
         lst_wrong = []
         cropped_shuffled_list =[]
         tmp = []
-        x = 0
+        random_word = 0
         start(message)
 bot.polling()

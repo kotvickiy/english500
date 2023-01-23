@@ -16,7 +16,7 @@ cropped_shuffled_list =[]
 tmp = []
 random_word = 0
 
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot(TOKEN, skip_pending=True)
 
 
 @bot.message_handler(commands=['start'])
